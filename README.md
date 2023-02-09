@@ -4,6 +4,8 @@ j'ai utiliser XAMPP pour mon projet.
 2/Téléchargez un IDE qui supporte php , j'utilise Visual studio code (https://code.visualstudio.com/)
 
 #Les langages de programmations sont: php , html , css , sql
+
+
 1/ index.php : fichier qui gére la creation du formulaire pour la connexion et l'inscription .
                 #La connexion :
                - Si une adresse mail et le mot de passe figure dans la base de données la connexion est permise , sinon le programme renvoi 
