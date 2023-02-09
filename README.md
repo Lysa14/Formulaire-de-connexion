@@ -38,5 +38,6 @@ j'ai utiliser XAMPP pour mon projet.
  
  5/style.css : fichier qui comporte la stylisation du programme.
  
+ 6/ screenshot du programme .
  
                
