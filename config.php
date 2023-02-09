@@ -12,6 +12,7 @@ function validatePasswordLength($password) {
 function validatePasswordComplexity($password) {
     if (!preg_match("#[0-9]+#", $password)) {
         return false;
+        
     }
     if (!preg_match("#[a-z]+#", $password)) {
         return false;
