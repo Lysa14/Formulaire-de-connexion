@@ -40,37 +40,43 @@ if(isset($_POST['cnxBTN'])){
 
    $userMail =  htmlspecialchars($_POST['inscr-mail']);
    $confMaiL=  htmlspecialchars($_POST['conf-mail']);
-   $userMDP = filter_input(INPUT_POST, 'mdp', FILTER_SANITIZE_STRING);
+   $userMDP = filter_input(INPUT_POST, 'inscr-mdp', FILTER_SANITIZE_STRING);
+  
    
-   if(empty($_POST['inscr-mail']) ||  $_POST['inscr-mail'] !== $_POST['conf-mail']  || filter_var($_POST['inscr-mail'],FILTER_VALIDATE_EMAIL) ){
+   if(empty($_POST['inscr-mail']) ||  $_POST['inscr-mail'] !== $_POST['conf-mail']  || !filter_var($_POST['inscr-mail'],FILTER_VALIDATE_EMAIL) ){
 
-      $erreurs['inscr-mail'] = "Veuillez renseigner un email ou verifier si vous avez bien confimer l'email";
+      $erreurs['inscr-mail'] = "-Veuillez renseigner un email ou verifier si vous avez bien confimer l'email";
    }else{
-
+      $con = mysqli_connect('localhost:3300' , 'root' , '' ,'Formulaire');
       $query = "select * from utilisateur where email = ? ; " ;
       $r = $con->prepare($query);
-      $r->execute($_POST['inscr-mail']);
-      if($r = fetch()){
-         $erreurs['inscr-mail'] = "cet email est déja pris";
+      $r->bind_param("s",$_POST['inscr-mail']);
+      $r->execute();
+      $resu=$r->get_result();
+      if($resu->num_rows >0){
+         $erreurs['inscr-mail'] = "-cet email est déja pris";
+         $con->close(); 
       }
+      
+
    }
 
    if( empty($_POST['inscr-mdp']) || $_POST['inscr-mdp'] !== $_POST['conf-mdp']){
    
-      $erreurs['inscr-mdp'] = "Veuillez renseigner un mot de passe ou verifier si vous avez bien confimer l'email";
+      $erreurs['inscr-mdp'] = "-Veuillez renseigner un mot de passe ou verifier si vous avez bien confimer votre mot de passe";
    
    }
 
 
    // Validation de la longueur du mot de passe
    if (!validatePasswordLength($userMDP)) {
-      $erreurs['mdp-court'] = "Le mot de passe est trop court. Il doit comporter au moins 8 caractères.";
+      $erreurs['mdp-court'] = "-Le mot de passe est trop court. Il doit comporter au moins 8 caractères.";
      // exit;
    }
 
    // Validation de la complexité du mot de passe
    if (!validatePasswordComplexity($userMDP)) {
-      $erreurs['mdp-complexe'] =  "Le mot de passe n'est pas assez complexe. Il doit comporter au moins une minuscule, une majuscule, un chiffre et un symbole.";
+      $erreurs['mdp-complexe'] =  "-Le mot de passe n'est pas assez complexe. Il doit comporter au moins une minuscule, une majuscule, un chiffre et un symbole.";
       //exit;
    }
 
@@ -84,7 +90,7 @@ if(isset($_POST['cnxBTN'])){
 
 
    $insert = $con->prepare('insert into utilisateur(email,mdp) values(?,?)');
-   $insert->execute(array($userMail,$userMDP));
+   $insert->execute(array($userMail,$MDPhash ));
    $Felicitation = "";
 
   }
